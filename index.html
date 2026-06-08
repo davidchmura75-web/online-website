@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Chen — Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Cat doodle background (populated by JS) -->
+  <div class="bg-canvas" id="bgCanvas"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-logo" href="#">🐾 Alex Chen</a>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-text fade-in">
+        <h1>Hello,<br/>I'm <em>Alex.</em></h1>
+        <p>A developer who codes like a cat — curious, precise, and occasionally knocking things off the table just to see what happens.</p>
+        <a class="hero-cta" href="#projects">See my work →</a>
+      </div>
+      <div class="hero-illustration fade-in" style="transition-delay:0.15s">
+        <div class="cat-card">
+          <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="90" cy="130" rx="48" ry="36" fill="#F5E6D8"/>
+            <path d="M138 148 Q172 120 162 98 Q158 88 148 98 Q155 115 138 148Z" fill="#F2D4C8" stroke="#D4A89A" stroke-width="1"/>
+            <circle cx="90" cy="82" r="42" fill="#FDF0E8"/>
+            <polygon points="55,52 45,20 70,46" fill="#FDF0E8" stroke="#D4A89A" stroke-width="1.5" stroke-linejoin="round"/>
+            <polygon points="57,50 50,28 68,46" fill="#F2D4C8"/>
+            <polygon points="125,52 135,20 110,46" fill="#FDF0E8" stroke="#D4A89A" stroke-width="1.5" stroke-linejoin="round"/>
+            <polygon points="123,50 130,28 112,46" fill="#F2D4C8"/>
+            <ellipse cx="74" cy="82" rx="9" ry="10" fill="#3D2C2C"/>
+            <ellipse cx="106" cy="82" rx="9" ry="10" fill="#3D2C2C"/>
+            <circle cx="77" cy="79" r="3" fill="white"/>
+            <circle cx="109" cy="79" r="3" fill="white"/>
+            <polygon points="90,96 86,101 94,101" fill="#D4A89A"/>
+            <path d="M86,101 Q90,107 94,101" stroke="#C4857A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <line x1="50" y1="95" x2="76" y2="99" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
+            <line x1="50" y1="101" x2="76" y2="101" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
+            <line x1="50" y1="107" x2="76" y2="103" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
+            <line x1="130" y1="95" x2="104" y2="99" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
+            <line x1="130" y1="101" x2="104" y2="101" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
+            <line x1="130" y1="107" x2="104" y2="103" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
+            <ellipse cx="64" cy="158" rx="16" ry="10" fill="#F5E6D8"/>
+            <ellipse cx="116" cy="158" rx="16" ry="10" fill="#F5E6D8"/>
+            <ellipse cx="56" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
+            <ellipse cx="64" cy="154" rx="4" ry="3" fill="#F2D4C8"/>
+            <ellipse cx="72" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
+            <ellipse cx="108" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
+            <ellipse cx="116" cy="154" rx="4" ry="3" fill="#F2D4C8"/>
+            <ellipse cx="124" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
+            <rect x="54" y="134" width="72" height="4" rx="2" fill="#C4857A" opacity="0.4"/>
+          </svg>
+          <span class="cat-name-tag">Mochi, my debugging assistant</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- About -->
+  <section id="about">
+    <div class="section-label">About me</div>
+    <h2 class="section-title fade-in">Curious by nature,<br/>careful by craft.</h2>
+    <div class="about-grid fade-in">
+      <div class="about-text">
+        <p>I'm a full-stack developer based in San Francisco with 4 years of experience building web apps that are as delightful as a cat knocking a glass off the counter — but a lot more intentional.</p>
+        <p>I love clean code, accessible design, and the satisfying click of a well-tested deployment. When I'm not debugging, you'll find me sketching UI ideas or convincing Mochi not to sit on my keyboard.</p>
+        <div class="skills-list">
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">Node.js</span>
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">GraphQL</span>
+        </div>
+      </div>
+      <div class="fun-facts">
+        <div class="fun-fact"><span class="fact-icon">🐾</span><span class="fact-text"><strong>4+ years</strong> of professional development across startups &amp; agencies</span></div>
+        <div class="fun-fact"><span class="fact-icon">🌸</span><span class="fact-text"><strong>30+ projects</strong> shipped, from tiny tools to large-scale platforms</span></div>
+        <div class="fun-fact"><span class="fact-icon">😸</span><span class="fact-text"><strong>1 cat</strong> (Mochi) who reviews all PRs by sitting on the laptop</span></div>
+        <div class="fun-fact"><span class="fact-icon">☕</span><span class="fact-text"><strong>Fueled by oat lattes</strong> and the joy of fixing a gnarly bug at 2am</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="paw-divider">🐾 🐾 🐾</div>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="projects-header fade-in">
+      <div class="section-label">Work</div>
+      <h2 class="section-title" style="margin-bottom:0.5rem;">Things I've<br/>built &amp; loved.</h2>
+      <p class="projects-hint">Hover to pause · drag to fling →</p>
+    </div>
+
+    <div class="projects-track-wrap">
+      <div class="projects-belt" id="projBelt">
+
+        <div class="project-card pink">
+          <span class="project-emoji">🌿</span>
+          <h3>Bloom — Plant Care App</h3>
+          <p>A mobile-first app that reminds you to water your plants so they don't suffer the same fate as your houseplants circa 2020.</p>
+          <div class="project-tags">
+            <span class="project-tag">React Native</span>
+            <span class="project-tag">Node.js</span>
+            <span class="project-tag">Push Notifications</span>
+          </div>
+        </div>
+
+        <div class="project-card lavender">
+          <span class="project-emoji">📚</span>
+          <h3>Purruse — Reading Tracker</h3>
+          <p>A cozy reading log with cat-themed achievements. Track books, set goals, and get a digital sticker from Mochi when you finish one.</p>
+          <div class="project-tags">
+            <span class="project-tag">Next.js</span>
+            <span class="project-tag">Supabase</span>
+            <span class="project-tag">TypeScript</span>
+          </div>
+        </div>
+
+        <div class="project-card sage">
+          <span class="project-emoji">🛒</span>
+          <h3>Pantry — Grocery Planner</h3>
+          <p>Smart grocery lists that sync across devices and suggest meals based on what's already in your fridge. Built for a local startup.</p>
+          <div class="project-tags">
+            <span class="project-tag">React</span>
+            <span class="project-tag">GraphQL</span>
+            <span class="project-tag">PostgreSQL</span>
+          </div>
+        </div>
+
+        <div class="project-card warm">
+          <span class="project-emoji">🎨</span>
+          <h3>Palette — Design System</h3>
+          <p>An open-source component library with 60+ accessible components. Used by 400+ developers on GitHub. My personal pride and joy.</p>
+          <div class="project-tags">
+            <span class="project-tag">Storybook</span>
+            <span class="project-tag">WCAG 2.1</span>
+            <span class="project-tag">Open Source</span>
+          </div>
+        </div>
+
+        <div class="project-card sky">
+          <span class="project-emoji">🌙</span>
+          <h3>Nap — Focus Timer</h3>
+          <p>A Pomodoro-style focus app inspired by cat nap cycles. Gentle ambient sounds, soft UI, zero distractions.</p>
+          <div class="project-tags">
+            <span class="project-tag">Vue 3</span>
+            <span class="project-tag">Web Audio API</span>
+            <span class="project-tag">IndexedDB</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact-section">
+    <div class="contact-box fade-in">
+      <h2>Let's make something<br/>wonderful.</h2>
+      <p>Open to new projects, collaborations, and good conversations about code — or cats.</p>
+      <div class="contact-links">
+        <a class="contact-link primary" href="mailto:alex@example.com">✉️ Say hello</a>
+        <a class="contact-link secondary" href="#">GitHub</a>
+        <a class="contact-link secondary" href="#">LinkedIn</a>
+        <a class="contact-link secondary" href="#">Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>Made with 🐾 and a lot of oat lattes &nbsp;·&nbsp; Alex Chen © 2026</footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,189 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alex Chen — Developer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Cat doodle background (populated by JS) -->
-  <div class="bg-canvas" id="bgCanvas"></div>
+<nav>
+  <span class="nav-name">Your Name</span>
+  <div class="nav-links">
+    <a href="#about">about</a>
+    <a href="#robots">robots</a>
+    <a href="#projects">projects</a>
+    <a href="#skills">skills</a>
+    <a href="#contact">contact</a>
+  </div>
+</nav>
 
-  <!-- Nav -->
-  <nav>
-    <a class="nav-logo" href="#">🐾 Alex Chen</a>
-    <ul>
-      <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+<!-- HERO / HEADER — full first screen -->
+<header class="hero">
+  <svg class="hero-tree hero-tree-left" viewBox="0 0 320 520" aria-hidden="true">
+    <use href="#hero-tree-art"/>
+  </svg>
+  <svg class="hero-tree hero-tree-right" viewBox="0 0 320 520" aria-hidden="true">
+    <use href="#hero-tree-art"/>
+  </svg>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="canopy-grad" cx="40%" cy="34%" r="72%">
+        <stop offset="0" stop-color="#6f9352"/>
+        <stop offset="0.5" stop-color="#527A38"/>
+        <stop offset="1" stop-color="#2C3D1E"/>
+      </radialGradient>
+      <linearGradient id="bark-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#7a6238"/>
+        <stop offset="0.5" stop-color="#5C4A2A"/>
+        <stop offset="1" stop-color="#41331d"/>
+      </linearGradient>
+      <g id="hero-tree-art">
+        <!-- trunk + a few limbs reaching into the canopy -->
+        <path class="tt-bark" d="M156 520 C 153 452 148 398 151 352 C 140 330 126 316 110 308 C 129 312 146 320 157 338 C 160 312 168 292 180 276 C 172 298 167 318 168 344 C 180 322 198 312 216 308 C 197 318 180 332 170 356 C 172 410 173 462 170 520 Z"/>
+        <!-- soft shadow base -->
+        <circle class="tt-shadow" cx="160" cy="208" r="132"/>
+        <!-- darkest back clumps: wide, with a broad flatter crown -->
+        <circle class="tt-c1" cx="58"  cy="186" r="58"/>
+        <circle class="tt-c1" cx="262" cy="186" r="58"/>
+        <circle class="tt-c1" cx="108" cy="132" r="50"/>
+        <circle class="tt-c1" cx="160" cy="120" r="52"/>
+        <circle class="tt-c1" cx="212" cy="132" r="50"/>
+        <circle class="tt-c1" cx="160" cy="244" r="86"/>
+        <circle class="tt-c1" cx="92"  cy="240" r="50"/>
+        <circle class="tt-c1" cx="228" cy="240" r="50"/>
+        <circle class="tt-c1" cx="34"  cy="204" r="26"/>
+        <circle class="tt-c1" cx="286" cy="204" r="26"/>
+        <!-- gradient-shaded mid body -->
+        <circle class="tt-c2" cx="150" cy="182" r="76"/>
+        <circle class="tt-c2" cx="90"  cy="172" r="54"/>
+        <circle class="tt-c2" cx="230" cy="172" r="54"/>
+        <circle class="tt-c2" cx="160" cy="224" r="62"/>
+        <circle class="tt-c2" cx="110" cy="210" r="48"/>
+        <circle class="tt-c2" cx="210" cy="210" r="48"/>
+        <!-- highlights catching the light, upper-left -->
+        <circle class="tt-c3" cx="112" cy="134" r="30"/>
+        <circle class="tt-c3" cx="146" cy="112" r="22"/>
+        <circle class="tt-c3" cx="82"  cy="162" r="22"/>
+        <circle class="tt-c3" cx="160" cy="158" r="22"/>
+        <circle class="tt-c3" cx="126" cy="186" r="16"/>
+        <!-- fine leaf texture -->
+        <circle class="tt-dot" cx="122" cy="150" r="3"/>
+        <circle class="tt-dot" cx="172" cy="130" r="3"/>
+        <circle class="tt-dot" cx="94"  cy="204" r="3"/>
+        <circle class="tt-dot" cx="204" cy="192" r="3"/>
+        <circle class="tt-dot" cx="150" cy="220" r="3"/>
+        <circle class="tt-dot" cx="212" cy="152" r="3"/>
+      </g>
+    </defs>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-kicker">Mechanical Engineering &amp; Computer Science</div>
+    <h1 class="hero-name">Your<br><em>Name</em></h1>
+    <p class="hero-tagline">I build robots and the systems that run them — from machined parts and PCBs to control loops and software.</p>
+    <a class="hero-cue" href="#about">scroll <span>&darr;</span></a>
+  </div>
+</header>
 
-  <!-- Hero -->
-  <header class="hero">
-    <div class="hero-content">
-      <div class="hero-text fade-in">
-        <h1>Hello,<br/>I'm <em>Alex.</em></h1>
-        <p>A developer who codes like a cat — curious, precise, and occasionally knocking things off the table just to see what happens.</p>
-        <a class="hero-cta" href="#projects">See my work →</a>
+<!-- ABOUT ME -->
+<section class="about-section leaf-bg" id="about">
+  <div>
+    <div class="about-heading">About<br><em>Me</em></div>
+    <div class="about-field">ME + CS · robotics</div>
+  </div>
+  <div class="about-body">
+    <p>I'm a mechanical and computer science student who builds robots and the systems that run them. Most of my work sits at the intersection of physical design and computation — where the math of structures meets the math of control.</p>
+    <p>I care about understanding systems all the way down: designing and machining the parts, laying out the PCB, writing the firmware, building the control loop, and shipping the software that lets a person interact with it. I find the boundary between disciplines more interesting than either side alone.</p>
+    <p>Outside of robotics I'm interested in dynamics simulation, mechanism design, and making tools that help other engineers work better.</p>
+  </div>
+</section>
+
+<!-- ROBOTS CAROUSEL -->
+<section class="carousel-section" id="robots">
+  <span class="section-tag">Robots</span>
+  <button class="car-arrow car-prev" data-car="robots" aria-label="Previous">&larr;</button>
+  <button class="car-arrow car-next" data-car="robots" aria-label="Next">&rarr;</button>
+  <div class="carousel" data-carousel="robots">
+    <article class="card" role="link" tabindex="0" data-href="projects/robotic-arm.html">
+      <div class="card-img"><span>photo or render</span></div>
+      <div class="card-body">
+        <div class="card-label"><span class="dot"></span>Mechanical + Controls</div>
+        <h3 class="card-title">6-Axis Robotic Arm</h3>
+        <p class="card-desc">Machined aluminum links, brushless motors with field-oriented control, ROS2 motion planner on an onboard Jetson — from structural FEA to trajectory planning.</p>
+        <div class="card-tags"><span class="tag">SolidWorks</span><span class="tag">ROS2</span><span class="tag">C++</span><span class="tag">PCB</span></div>
       </div>
-      <div class="hero-illustration fade-in" style="transition-delay:0.15s">
-        <div class="cat-card">
-          <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="90" cy="130" rx="48" ry="36" fill="#F5E6D8"/>
-            <path d="M138 148 Q172 120 162 98 Q158 88 148 98 Q155 115 138 148Z" fill="#F2D4C8" stroke="#D4A89A" stroke-width="1"/>
-            <circle cx="90" cy="82" r="42" fill="#FDF0E8"/>
-            <polygon points="55,52 45,20 70,46" fill="#FDF0E8" stroke="#D4A89A" stroke-width="1.5" stroke-linejoin="round"/>
-            <polygon points="57,50 50,28 68,46" fill="#F2D4C8"/>
-            <polygon points="125,52 135,20 110,46" fill="#FDF0E8" stroke="#D4A89A" stroke-width="1.5" stroke-linejoin="round"/>
-            <polygon points="123,50 130,28 112,46" fill="#F2D4C8"/>
-            <ellipse cx="74" cy="82" rx="9" ry="10" fill="#3D2C2C"/>
-            <ellipse cx="106" cy="82" rx="9" ry="10" fill="#3D2C2C"/>
-            <circle cx="77" cy="79" r="3" fill="white"/>
-            <circle cx="109" cy="79" r="3" fill="white"/>
-            <polygon points="90,96 86,101 94,101" fill="#D4A89A"/>
-            <path d="M86,101 Q90,107 94,101" stroke="#C4857A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <line x1="50" y1="95" x2="76" y2="99" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
-            <line x1="50" y1="101" x2="76" y2="101" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
-            <line x1="50" y1="107" x2="76" y2="103" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
-            <line x1="130" y1="95" x2="104" y2="99" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
-            <line x1="130" y1="101" x2="104" y2="101" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
-            <line x1="130" y1="107" x2="104" y2="103" stroke="#9B7878" stroke-width="1" opacity="0.5"/>
-            <ellipse cx="64" cy="158" rx="16" ry="10" fill="#F5E6D8"/>
-            <ellipse cx="116" cy="158" rx="16" ry="10" fill="#F5E6D8"/>
-            <ellipse cx="56" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
-            <ellipse cx="64" cy="154" rx="4" ry="3" fill="#F2D4C8"/>
-            <ellipse cx="72" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
-            <ellipse cx="108" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
-            <ellipse cx="116" cy="154" rx="4" ry="3" fill="#F2D4C8"/>
-            <ellipse cx="124" cy="156" rx="4" ry="3" fill="#F2D4C8"/>
-            <rect x="54" y="134" width="72" height="4" rx="2" fill="#C4857A" opacity="0.4"/>
-          </svg>
-          <span class="cat-name-tag">Mochi, my debugging assistant</span>
-        </div>
+    </article>
+    <article class="card" role="link" tabindex="0" data-href="projects/outdoor-rover.html">
+      <div class="card-img"><span>photo</span></div>
+      <div class="card-body">
+        <div class="card-label"><span class="dot"></span>Autonomous systems</div>
+        <h3 class="card-title">Outdoor Rover</h3>
+        <p class="card-desc">SLAM navigation, IMU fusion, and a custom suspension geometry for rough terrain.</p>
+        <div class="card-tags"><span class="tag">Python</span><span class="tag">SLAM</span><span class="tag">CAD</span></div>
       </div>
+    </article>
+    <article class="card" role="link" tabindex="0" data-href="projects/biped-walker.html">
+      <div class="card-img"><span>photo</span></div>
+      <div class="card-body">
+        <div class="card-label"><span class="dot"></span>Mechanical</div>
+        <h3 class="card-title">Biped Walker</h3>
+        <p class="card-desc">ZMP gait controller on a machined + printed frame with a custom IMU board.</p>
+        <div class="card-tags"><span class="tag">Fusion 360</span><span class="tag">MATLAB</span><span class="tag">STM32</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- OTHER (NON-ROBOT) PROJECTS CAROUSEL -->
+<section class="carousel-section carousel-section-dark" id="projects">
+  <span class="section-tag">Other projects</span>
+  <button class="car-arrow car-prev" data-car="projects" aria-label="Previous">&larr;</button>
+  <button class="car-arrow car-next" data-car="projects" aria-label="Next">&rarr;</button>
+  <div class="carousel" data-carousel="projects" data-reverse>
+    <article class="card card-dark" role="link" tabindex="0" data-href="projects/motor-tuning-app.html">
+      <div class="card-img card-img-dark"><span>screenshot</span></div>
+      <div class="card-body">
+        <div class="card-label"><span class="dot"></span>Software</div>
+        <h3 class="card-title">Motor Tuning App</h3>
+        <p class="card-desc">Cross-platform GUI for PID tuning and live telemetry over CAN.</p>
+        <div class="card-tags"><span class="tag">C++</span><span class="tag">Qt</span><span class="tag">CAN</span></div>
+      </div>
+    </article>
+    <article class="card card-dark" role="link" tabindex="0" data-href="projects/dynamics-simulator.html">
+      <div class="card-img card-img-dark"><span>screenshot</span></div>
+      <div class="card-body">
+        <div class="card-label"><span class="dot"></span>Simulation</div>
+        <h3 class="card-title">Dynamics Simulator</h3>
+        <p class="card-desc">Multi-body rigid dynamics engine with constraint solving, written from scratch.</p>
+        <div class="card-tags"><span class="tag">Python</span><span class="tag">NumPy</span><span class="tag">OpenGL</span></div>
+      </div>
+    </article>
+    <article class="card card-dark" role="link" tabindex="0" data-href="projects/custom-esc.html">
+      <div class="card-img card-img-dark"><span>photo</span></div>
+      <div class="card-body">
+        <div class="card-label"><span class="dot"></span>Embedded</div>
+        <h3 class="card-title">Custom ESC</h3>
+        <p class="card-desc">4-layer PCB, STM32 FOC firmware, 40A continuous at 6S.</p>
+        <div class="card-tags"><span class="tag">KiCad</span><span class="tag">C</span><span class="tag">BLDC</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section leaf-bg" id="skills">
+  <span class="section-tag">Skills</span>
+  <div class="skill-forest">
+
+    <!-- one little tree per discipline; trunk + branches + foliage are drawn
+         by main.js. They sit in a row and wrap/stack as the page narrows. -->
+    <div class="mini-tree">
+      <svg class="branches" viewBox="0 0 300 460" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="hex hex-cat" style="left:50%;top:63%" role="img" aria-label="Mechanical"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-gear"/></svg></span><span class="cat-label">Mechanical</span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="SolidWorks" data-skill="SolidWorks" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-cube"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="Fusion 360" data-skill="Fusion 360" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-orbit"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="FEA" data-skill="FEA" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-mesh"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="GD&amp;T" data-skill="GD&amp;T" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-ruler"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="CNC machining" data-skill="CNC machining" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-mill"/></svg></span></div>
     </div>
-  </header>
 
-  <!-- About -->
-  <section id="about">
-    <div class="section-label">About me</div>
-    <h2 class="section-title fade-in">Curious by nature,<br/>careful by craft.</h2>
-    <div class="about-grid fade-in">
-      <div class="about-text">
-        <p>I'm a full-stack developer based in San Francisco with 4 years of experience building web apps that are as delightful as a cat knocking a glass off the counter — but a lot more intentional.</p>
-        <p>I love clean code, accessible design, and the satisfying click of a well-tested deployment. When I'm not debugging, you'll find me sketching UI ideas or convincing Mochi not to sit on my keyboard.</p>
-        <div class="skills-list">
-          <span class="skill-tag">React</span>
-          <span class="skill-tag">TypeScript</span>
-          <span class="skill-tag">Node.js</span>
-          <span class="skill-tag">PostgreSQL</span>
-          <span class="skill-tag">Figma</span>
-          <span class="skill-tag">AWS</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">GraphQL</span>
-        </div>
-      </div>
-      <div class="fun-facts">
-        <div class="fun-fact"><span class="fact-icon">🐾</span><span class="fact-text"><strong>4+ years</strong> of professional development across startups &amp; agencies</span></div>
-        <div class="fun-fact"><span class="fact-icon">🌸</span><span class="fact-text"><strong>30+ projects</strong> shipped, from tiny tools to large-scale platforms</span></div>
-        <div class="fun-fact"><span class="fact-icon">😸</span><span class="fact-text"><strong>1 cat</strong> (Mochi) who reviews all PRs by sitting on the laptop</span></div>
-        <div class="fun-fact"><span class="fact-icon">☕</span><span class="fact-text"><strong>Fueled by oat lattes</strong> and the joy of fixing a gnarly bug at 2am</span></div>
-      </div>
-    </div>
-  </section>
-
-  <div class="paw-divider">🐾 🐾 🐾</div>
-
-  <!-- Projects -->
-  <section id="projects">
-    <div class="projects-header fade-in">
-      <div class="section-label">Work</div>
-      <h2 class="section-title" style="margin-bottom:0.5rem;">Things I've<br/>built &amp; loved.</h2>
-      <p class="projects-hint">Hover to pause · drag to fling →</p>
+    <div class="mini-tree">
+      <svg class="branches" viewBox="0 0 300 460" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="hex hex-cat" style="left:50%;top:63%" role="img" aria-label="Electrical"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-bolt"/></svg></span><span class="cat-label">Electrical</span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="KiCad / PCB" data-skill="KiCad / PCB" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-board"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="STM32" data-skill="STM32" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-chip"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="BLDC / FOC" data-skill="BLDC / FOC" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-motor"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="CAN bus" data-skill="CAN bus" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-network"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="Sensor fusion" data-skill="Sensor fusion" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-radar"/></svg></span></div>
     </div>
 
-    <div class="projects-track-wrap">
-      <div class="projects-belt" id="projBelt">
-
-        <div class="project-card pink">
-          <span class="project-emoji">🌿</span>
-          <h3>Bloom — Plant Care App</h3>
-          <p>A mobile-first app that reminds you to water your plants so they don't suffer the same fate as your houseplants circa 2020.</p>
-          <div class="project-tags">
-            <span class="project-tag">React Native</span>
-            <span class="project-tag">Node.js</span>
-            <span class="project-tag">Push Notifications</span>
-          </div>
-        </div>
-
-        <div class="project-card lavender">
-          <span class="project-emoji">📚</span>
-          <h3>Purruse — Reading Tracker</h3>
-          <p>A cozy reading log with cat-themed achievements. Track books, set goals, and get a digital sticker from Mochi when you finish one.</p>
-          <div class="project-tags">
-            <span class="project-tag">Next.js</span>
-            <span class="project-tag">Supabase</span>
-            <span class="project-tag">TypeScript</span>
-          </div>
-        </div>
-
-        <div class="project-card sage">
-          <span class="project-emoji">🛒</span>
-          <h3>Pantry — Grocery Planner</h3>
-          <p>Smart grocery lists that sync across devices and suggest meals based on what's already in your fridge. Built for a local startup.</p>
-          <div class="project-tags">
-            <span class="project-tag">React</span>
-            <span class="project-tag">GraphQL</span>
-            <span class="project-tag">PostgreSQL</span>
-          </div>
-        </div>
-
-        <div class="project-card warm">
-          <span class="project-emoji">🎨</span>
-          <h3>Palette — Design System</h3>
-          <p>An open-source component library with 60+ accessible components. Used by 400+ developers on GitHub. My personal pride and joy.</p>
-          <div class="project-tags">
-            <span class="project-tag">Storybook</span>
-            <span class="project-tag">WCAG 2.1</span>
-            <span class="project-tag">Open Source</span>
-          </div>
-        </div>
-
-        <div class="project-card sky">
-          <span class="project-emoji">🌙</span>
-          <h3>Nap — Focus Timer</h3>
-          <p>A Pomodoro-style focus app inspired by cat nap cycles. Gentle ambient sounds, soft UI, zero distractions.</p>
-          <div class="project-tags">
-            <span class="project-tag">Vue 3</span>
-            <span class="project-tag">Web Audio API</span>
-            <span class="project-tag">IndexedDB</span>
-          </div>
-        </div>
-
-      </div>
+    <div class="mini-tree">
+      <svg class="branches" viewBox="0 0 300 460" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="hex hex-cat" style="left:50%;top:63%" role="img" aria-label="Software"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-code"/></svg></span><span class="cat-label">Software</span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="C++" data-skill="C++" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-cpp"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="C" data-skill="C" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-c"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="Python" data-skill="Python" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-terminal"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="TypeScript" data-skill="TypeScript" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-braces"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="ROS2" data-skill="ROS2" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-robot"/></svg></span></div>
     </div>
-  </section>
 
-  <!-- Contact -->
-  <section id="contact" class="contact-section">
-    <div class="contact-box fade-in">
-      <h2>Let's make something<br/>wonderful.</h2>
-      <p>Open to new projects, collaborations, and good conversations about code — or cats.</p>
-      <div class="contact-links">
-        <a class="contact-link primary" href="mailto:alex@example.com">✉️ Say hello</a>
-        <a class="contact-link secondary" href="#">GitHub</a>
-        <a class="contact-link secondary" href="#">LinkedIn</a>
-        <a class="contact-link secondary" href="#">Resume</a>
-      </div>
+    <div class="mini-tree">
+      <svg class="branches" viewBox="0 0 300 460" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="hex hex-cat" style="left:50%;top:63%" role="img" aria-label="Controls and Simulation"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-wave"/></svg></span><span class="cat-label">Controls &amp; Sim</span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="PID / control loops" data-skill="PID / control loops" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-loop"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="SLAM" data-skill="SLAM" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-pin"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="Rigid-body dynamics" data-skill="Rigid-body dynamics" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-pendulum"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="MATLAB" data-skill="MATLAB" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-matrix"/></svg></span></div>
+      <div class="hex" tabindex="0" role="img" aria-label="OpenGL / CUDA" data-skill="OpenGL / CUDA" style="left:50%;top:40%"><span class="hex-shape"><svg class="hex-icon" viewBox="0 0 24 24"><use href="#ic-globe"/></svg></span></div>
     </div>
-  </section>
+  </div>
 
-  <footer>Made with 🐾 and a lot of oat lattes &nbsp;·&nbsp; Alex Chen © 2026</footer>
+  <!-- icon definitions (line glyphs, stroked with currentColor) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- category icons -->
+      <symbol id="ic-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9 19 19M19 5l-2.1 2.1M7.1 16.9 5 19"/></symbol>
+      <symbol id="ic-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></symbol>
+      <symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+      <symbol id="ic-wave" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12c2 0 2-6 4-6s2 12 4 12 2-12 4-12 2 6 4 6h2"/></symbol>
+      <!-- skill icons -->
+      <symbol id="ic-cube" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2.5l8.5 4.75v9.5L12 21.5 3.5 16.75v-9.5z"/><path d="M3.5 7.25 12 12l8.5-4.75M12 12v9.5"/></symbol>
+      <symbol id="ic-orbit" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3.4"/><ellipse cx="12" cy="12" rx="10" ry="4.2"/><ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(60 12 12)"/></symbol>
+      <symbol id="ic-mesh" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3 21 20H3z"/><path d="M12 3v17M3 20l9-7 9 7"/></symbol>
+      <symbol id="ic-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="9" width="18" height="6" rx="1"/><path d="M7 9v2.5M11 9v3M15 9v2.5M19 9v2.5"/></symbol>
+      <symbol id="ic-mill" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v6"/><path d="M9.5 8h5l-1 5h-3z"/><path d="M12 13v9M10 22h4"/></symbol>
+      <symbol id="ic-board" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="1.5"/><circle cx="9" cy="9" r="1.1"/><circle cx="15" cy="15" r="1.1"/><path d="M9 10.1v3.4a1.5 1.5 0 0 0 1.5 1.5H14M4 12h2M18 12h2M12 4v2"/></symbol>
+      <symbol id="ic-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="7.5" y="7.5" width="9" height="9" rx="1"/><path d="M10 7.5V4.5M12 7.5V4.5M14 7.5V4.5M10 16.5v3M12 16.5v3M14 16.5v3M7.5 10H4.5M7.5 12H4.5M7.5 14H4.5M16.5 10h3M16.5 12h3M16.5 14h3"/></symbol>
+      <symbol id="ic-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2"/><path d="M12 4.5v3M12 16.5v3M4.5 12h3M16.5 12h3"/></symbol>
+      <symbol id="ic-network" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M7 12h10M12 7v10"/></symbol>
+      <symbol id="ic-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="2"/><path d="M12 12l7-4"/><path d="M12 5a7 7 0 0 1 7 7"/><path d="M12 8.5a3.5 3.5 0 0 1 3.5 3.5"/></symbol>
+      <symbol id="ic-cpp" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9.5 7 4.5 12l5 5M14.5 7l5 5-5 5"/></symbol>
+      <symbol id="ic-c" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 8.2a5.2 5.2 0 1 0 0 7.6"/></symbol>
+      <symbol id="ic-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7 10l3 2.5-3 2.5M13 15h4"/></symbol>
+      <symbol id="ic-braces" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 5a3 3 0 0 0-3 3v1.4a2 2 0 0 1-2 2 2 2 0 0 1 2 2V17a3 3 0 0 0 3 3"/><path d="M15 5a3 3 0 0 1 3 3v1.4a2 2 0 0 0 2 2 2 2 0 0 0-2 2V17a3 3 0 0 1-3 3"/></symbol>
+      <symbol id="ic-robot" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="5" y="8" width="14" height="11" rx="2.5"/><circle cx="9.5" cy="13" r="1.3"/><circle cx="14.5" cy="13" r="1.3"/><path d="M12 4.6V8M5 13H3M21 13h-2"/><circle cx="12" cy="3.8" r="1.1"/></symbol>
+      <symbol id="ic-loop" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M17.3 3.2v3.8h-3.8"/></symbol>
+      <symbol id="ic-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 21s6.5-6 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 15 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.3"/></symbol>
+      <symbol id="ic-pendulum" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 5h14M12 5l4 9"/><circle cx="16" cy="15.5" r="2.6"/><path d="M9 19a9 9 0 0 0 6.5-2.5"/></symbol>
+      <symbol id="ic-matrix" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 4H5v16h3M16 4h3v16h-3"/><circle cx="10.5" cy="9" r="0.9"/><circle cx="13.5" cy="9" r="0.9"/><circle cx="10.5" cy="15" r="0.9"/><circle cx="13.5" cy="15" r="0.9"/></symbol>
+      <symbol id="ic-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><ellipse cx="12" cy="12" rx="8" ry="3.4"/><ellipse cx="12" cy="12" rx="3.4" ry="8"/></symbol>
+    </defs>
+  </svg>
+</section>
 
-  <script src="main.js"></script>
+<!-- CONTACT / CONNECTIONS -->
+<section class="contact-section" id="contact">
+  <div>
+    <div class="contact-heading">Let's<br><em>connect.</em></div>
+    <div class="contact-meta">yourname@university.edu</div>
+  </div>
+  <div class="contact-btns">
+    <a class="cbtn" href="#">résumé</a>
+    <a class="cbtn" href="https://github.com/yourname">GitHub</a>
+    <a class="cbtn" href="https://linkedin.com/in/yourname">LinkedIn</a>
+    <a class="cbtn cbtn-primary" href="mailto:yourname@university.edu">get in touch</a>
+  </div>
+</section>
+
+<footer>
+  <span class="lit">Your Name</span>
+  <span>2026</span>
+</footer>
+
+<script src="main.js"></script>
 </body>
 </html>

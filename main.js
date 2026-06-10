@@ -1,227 +1,303 @@
-/* ============================================================
-   main.js — Alex Chen Portfolio
-   Sections:
-     1. Background doodles
-     2. Scroll fade-in
-     3. Cursor trail
-     4. Infinite auto-scroll project belt
-   ============================================================ */
+// Coverflow-style infinite carousels: cards scale up as they approach the
+// horizontal center and shrink/fade toward the edges. The track loops
+// endlessly (a full set of cards is cloned on each side), drifts slowly on
+// its own, and pauses when you hover or interact. Clicking a card opens its
+// page. Supports scroll, drag, arrow buttons, dots, and keyboard.
 
-/* ── 1. BACKGROUND DOODLES ── */
-(function initDoodles() {
-  const canvas = document.getElementById('bgCanvas');
-  if (!canvas) return;
+function setupCarousel(track) {
+  const originals = Array.from(track.children);
+  if (originals.length === 0) return;
 
-  function pawSVG(size) {
-    return `<svg width="${size}" height="${size}" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="30" cy="38" rx="14" ry="11" fill="#D4A89A"/>
-      <ellipse cx="14" cy="28" rx="7"  ry="9"  fill="#D4A89A"/>
-      <ellipse cx="46" cy="28" rx="7"  ry="9"  fill="#D4A89A"/>
-      <ellipse cx="22" cy="20" rx="6"  ry="8"  fill="#D4A89A"/>
-      <ellipse cx="38" cy="20" rx="6"  ry="8"  fill="#D4A89A"/>
-    </svg>`;
-  }
+  // Clone a full set before and after the originals for seamless looping.
+  const clone = (c) => { const n = c.cloneNode(true); n.classList.add('clone'); return n; };
+  originals.map(clone).forEach((n) => track.insertBefore(n, originals[0]));
+  originals.map(clone).forEach((n) => track.appendChild(n));
+  const cards = Array.from(track.children);
 
-  function yarnSVG(size) {
-    return `<svg width="${size}" height="${size}" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="30" cy="30" r="22" fill="#F2D4C8" stroke="#D4A89A" stroke-width="1.5"/>
-      <path d="M12 22 Q30 10 48 22" stroke="#C4857A" stroke-width="1.5" fill="none"/>
-      <path d="M10 30 Q30 18 50 30" stroke="#C4857A" stroke-width="1.5" fill="none"/>
-      <path d="M12 38 Q30 26 48 38" stroke="#C4857A" stroke-width="1.5" fill="none"/>
-      <line x1="30" y1="8"  x2="30" y2="52" stroke="#D4A89A" stroke-width="1"/>
-      <line x1="8"  y1="30" x2="52" y2="30" stroke="#D4A89A" stroke-width="1"/>
-    </svg>`;
-  }
+  const firstReal = originals[0];          // first card of the middle (real) set
+  const firstTail = cards[originals.length * 2]; // first card of the trailing clone set
 
-  function fishSVG(size) {
-    const h = size * 0.6;
-    return `<svg width="${size}" height="${h}" viewBox="0 0 80 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M60 24 Q72 10 78 24 Q72 38 60 24Z" fill="#9AB89A"/>
-      <ellipse cx="36" cy="24" rx="26" ry="16" fill="#9AB89A"/>
-      <circle cx="20" cy="20" r="3" fill="#3D2C2C"/>
-      <path d="M36 8 Q50 8 60 24 Q50 40 36 40" stroke="#7AA47A" stroke-width="1.5" fill="none"/>
-    </svg>`;
-  }
-
-  function starSVG(size) {
-    return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M20 4 L23 16 L36 16 L26 24 L29 36 L20 28 L11 36 L14 24 L4 16 L17 16 Z"
-            fill="#E8D4C0" stroke="#D4A89A" stroke-width="1"/>
-    </svg>`;
-  }
-
-  function zzzSVG(size) {
-    const h = size * 0.6;
-    return `<svg width="${size}" height="${h}" viewBox="0 0 60 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <text x="2" y="28" font-family="serif" font-size="28" fill="#D4A89A" font-style="italic">zzz</text>
-    </svg>`;
-  }
-
-  const generators = { paw: pawSVG, yarn: yarnSVG, fish: fishSVG, star: starSVG, zzz: zzzSVG };
-
-  const doodleConfig = [
-    { type: 'paw',  count: 18 },
-    { type: 'yarn', count: 8  },
-    { type: 'fish', count: 6  },
-    { type: 'star', count: 14 },
-    { type: 'zzz',  count: 6  },
-  ];
-
-  const pageH = Math.max(window.innerHeight * 4, 3000);
-
-  doodleConfig.forEach(({ type, count }) => {
-    for (let i = 0; i < count; i++) {
-      const size = 40 + Math.random() * 60;
-      const x    = Math.random() * (window.innerWidth - size);
-      const y    = Math.random() * pageH;
-      const rot  = Math.random() * 360;
-
-      const el = document.createElement('div');
-      el.className = 'bg-doodle';
-      el.style.cssText = `left:${x}px; top:${y}px; transform:rotate(${rot}deg);`;
-      el.innerHTML = generators[type](size);
-      canvas.appendChild(el);
-    }
-  });
-})();
-
-
-/* ── 2. SCROLL FADE-IN ── */
-(function initFadeIn() {
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
+  // Pagination dots — one per original card. Clicking centers that card.
+  const dotsWrap = document.createElement('div');
+  dotsWrap.className = 'car-dots';
+  const dots = originals.map((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'car-dot';
+    d.setAttribute('aria-label', 'Go to item ' + (i + 1));
+    d.addEventListener('click', () => {
+      bumpAuto();
+      cards[originals.length + i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     });
-  }, { threshold: 0.12 });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-})();
-
-
-/* ── 3. CURSOR TRAIL ── */
-(function initCursorTrail() {
-  const TRAIL_LENGTH = 7;
-  const dots = Array.from({ length: TRAIL_LENGTH }, () => {
-    const d = document.createElement('div');
-    d.className = 'paw-dot';
-    document.body.appendChild(d);
+    dotsWrap.appendChild(d);
     return d;
   });
+  track.parentNode.appendChild(dotsWrap);
 
-  let mouse = { x: 0, y: 0 };
-  let trail = Array(TRAIL_LENGTH).fill({ x: 0, y: 0 });
+  // Geometry, recomputed on resize.
+  let setWidth = 0, home = 0;
+  function measure() {
+    setWidth = firstTail.offsetLeft - firstReal.offsetLeft; // width of one full set
+    home = firstReal.offsetLeft - (track.clientWidth - firstReal.offsetWidth) / 2;
+  }
 
-  document.addEventListener('mousemove', e => {
-    mouse = { x: e.clientX, y: e.clientY };
+  // Keep scrollLeft within half a set-width of home. The wrap is invisible
+  // because the cloned card at the new position is identical to the old one.
+  function loop() {
+    if (setWidth <= 0) return;
+    if (track.scrollLeft < home - setWidth / 2) track.scrollLeft += setWidth;
+    else if (track.scrollLeft > home + setWidth / 2) track.scrollLeft -= setWidth;
+  }
+
+  // Update each card's --t (0 = centered, 1 = at the edge) and the active dot.
+  let raf = null;
+  function update() {
+    raf = null;
+    const rect = track.getBoundingClientRect();
+    const center = rect.left + rect.width / 2;
+    const reach = rect.width / 2; // distance at which a card is fully "far"
+    let nearest = 0, nearestDist = Infinity;
+    cards.forEach((card, idx) => {
+      const cr = card.getBoundingClientRect();
+      const cardCenter = cr.left + cr.width / 2;
+      const dist = Math.abs(center - cardCenter);
+      const t = Math.min(dist / reach, 1);
+      card.style.setProperty('--t', t.toFixed(3));
+      card.style.zIndex = String(Math.round((1 - t) * 100));
+      if (dist < nearestDist) { nearestDist = dist; nearest = idx; }
+    });
+    // Map the centered card back to its original index and light its dot.
+    const active = ((nearest % originals.length) + originals.length) % originals.length;
+    dots.forEach((d, i) => d.classList.toggle('active', i === active));
+  }
+  function schedule() {
+    if (raf === null) raf = requestAnimationFrame(update);
+  }
+
+  // Auto-advance: a slow, continuous drift. Snap is disabled while drifting.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // px per frame ≈ a gentle crawl; negative drifts the other way.
+  const DRIFT = track.hasAttribute('data-reverse') ? -0.5 : 0.5;
+  let apRaf = null, resumeTimer = null, driftAccum = 0;
+  function autoTick() {
+    // Accumulate fractional drift and apply only whole-pixel steps, since
+    // scrollLeft is rounded to integers (sub-pixel writes get rounded away).
+    driftAccum += DRIFT;
+    const stepPx = Math.trunc(driftAccum);
+    if (stepPx !== 0) {
+      driftAccum -= stepPx;
+      track.scrollLeft += stepPx;
+      loop();
+      update();
+    }
+    apRaf = requestAnimationFrame(autoTick);
+  }
+  function playAuto() {
+    if (reduceMotion || apRaf !== null) return;
+    track.classList.add('autoplaying');
+    apRaf = requestAnimationFrame(autoTick);
+  }
+  function pauseAuto() {
+    if (apRaf !== null) { cancelAnimationFrame(apRaf); apRaf = null; }
+    track.classList.remove('autoplaying');
+  }
+  // Pause briefly after a discrete interaction (dot/arrow), then resume.
+  function bumpAuto() {
+    pauseAuto();
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(playAuto, 4000);
+  }
+
+  track.addEventListener('scroll', () => { loop(); schedule(); }, { passive: true });
+  window.addEventListener('resize', () => { measure(); loop(); schedule(); });
+
+  // Open a card's page. Tapping navigates (handled on pointerup so it works
+  // with pointer capture); Enter/Space works for keyboard focus.
+  function go(card) {
+    const href = card && card.dataset.href;
+    if (href) window.location.href = href;
+  }
+  cards.forEach((card) => {
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(card); }
+    });
   });
 
-  function animateTrail() {
-    trail = [{ ...mouse }, ...trail.slice(0, TRAIL_LENGTH - 1)];
-    dots.forEach((dot, i) => {
-      dot.style.left      = (trail[i].x - 6) + 'px';
-      dot.style.top       = (trail[i].y - 6) + 'px';
-      dot.style.opacity   = (1 - i / TRAIL_LENGTH) * 0.3;
-      dot.style.transform = `scale(${1 - i * 0.12})`;
+  // Arrow buttons scroll by one card width + gap.
+  const name = track.dataset.carousel;
+  const step = () => {
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 28;
+    return firstReal.getBoundingClientRect().width + gap;
+  };
+  document.querySelectorAll('.car-prev[data-car="' + name + '"]').forEach((b) =>
+    b.addEventListener('click', () => { bumpAuto(); track.scrollBy({ left: -step(), behavior: 'smooth' }); })
+  );
+  document.querySelectorAll('.car-next[data-car="' + name + '"]').forEach((b) =>
+    b.addEventListener('click', () => { bumpAuto(); track.scrollBy({ left: step(), behavior: 'smooth' }); })
+  );
+
+  // Drag to scroll, with fling (momentum) on release. We move by incremental
+  // deltas so the loop can wrap mid-drag, and track velocity for the coast.
+  let dragging = false, lastX = 0, lastT = 0, moved = 0, vel = 0, momRaf = null, downCard = null;
+
+  function stopMomentum() {
+    if (momRaf !== null) { cancelAnimationFrame(momRaf); momRaf = null; }
+  }
+  // Coast after release: apply the drag velocity, decaying with friction.
+  function momentum() {
+    track.scrollLeft += vel;
+    loop();
+    update();
+    vel *= 0.95; // friction
+    if (Math.abs(vel) < 0.2) {
+      momRaf = null;
+      track.classList.remove('dragging');
+      playAuto(); // resume drifting once the fling settles
+      return;
+    }
+    momRaf = requestAnimationFrame(momentum);
+  }
+
+  track.addEventListener('pointerdown', (e) => {
+    stopMomentum();
+    pauseAuto();
+    dragging = true; moved = 0; vel = 0;
+    downCard = e.target.closest('.card');
+    lastX = e.clientX; lastT = e.timeStamp;
+    track.classList.add('dragging');
+    track.setPointerCapture(e.pointerId);
+  });
+  track.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - lastX;
+    const dt = e.timeStamp - lastT;
+    lastX = e.clientX; lastT = e.timeStamp;
+    moved += Math.abs(dx);
+    track.scrollLeft -= dx;
+    loop();
+    // Smoothed scroll velocity in px/frame (~16ms), clamped for sanity.
+    if (dt > 0) {
+      const inst = (-dx / dt) * 16;
+      vel = Math.max(-60, Math.min(60, vel * 0.6 + inst * 0.4));
+    }
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    if (e && e.pointerId != null && track.hasPointerCapture(e.pointerId)) {
+      track.releasePointerCapture(e.pointerId);
+    }
+    // A tap (no real drag) opens the card's page.
+    if (moved <= 4) {
+      track.classList.remove('dragging');
+      if (downCard && downCard.dataset.href) { go(downCard); return; }
+      playAuto();
+      return;
+    }
+    if (Math.abs(vel) > 0.5) {
+      momRaf = requestAnimationFrame(momentum); // fling
+    } else {
+      track.classList.remove('dragging');
+      playAuto();
+    }
+  }
+  track.addEventListener('pointerup', endDrag);
+  track.addEventListener('pointercancel', endDrag);
+  // Prevent any synthetic click after a drag from doing anything unexpected.
+  track.addEventListener('click', (e) => { if (moved > 4) { e.stopPropagation(); e.preventDefault(); } }, true);
+
+  // Start centered on the first real card, then begin drifting.
+  requestAnimationFrame(() => {
+    measure();
+    track.scrollLeft = home;
+    update();
+    playAuto();
+  });
+}
+
+document.querySelectorAll('.carousel').forEach(setupCarousel);
+
+
+// ---- Skills forest: each .mini-tree grows a trunk, tapered branches and
+// foliage behind its icon nodes. Geometry is derived from the icon % positions
+// (each tree's SVG shares its box aspect ratio, so nothing distorts).
+(function buildSkillForest() {
+  const W = 300, H = 460;
+  const FAN_ANG = [202, 236, 270, 304, 338]; // degrees (270 = straight up)
+  const FAN_R   = [104, 124, 92, 120, 108];  // base distance per slot
+
+  // tiny deterministic PRNG so the foliage is stable across reloads
+  let seed = 7;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+
+  // a tapered, gently bowed filled limb from p0 (half-width w0) to p1 (w1)
+  function limb(p0, p1, w0, w1, bow) {
+    const dx = p1.x - p0.x, dy = p1.y - p0.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    const mx = (p0.x + p1.x) / 2 + nx * bow, my = (p0.y + p1.y) / 2 + ny * bow;
+    const wc = (w0 + w1) / 2;
+    const f = (n) => n.toFixed(1);
+    return `M${f(p0.x + nx * w0)} ${f(p0.y + ny * w0)}`
+      + ` Q${f(mx + nx * wc)} ${f(my + ny * wc)} ${f(p1.x + nx * w1)} ${f(p1.y + ny * w1)}`
+      + ` L${f(p1.x - nx * w1)} ${f(p1.y - ny * w1)}`
+      + ` Q${f(mx - nx * wc)} ${f(my - ny * wc)} ${f(p0.x - nx * w0)} ${f(p0.y - ny * w0)} Z`;
+  }
+
+  const LEAFCOLORS = ['#3D5A2A', '#527A38', '#8BA876'];
+  function oneLeaf(x, y, size, angle, ci) {
+    const k = size * 0.62, f = (n) => n.toFixed(1);
+    return `<path fill="${LEAFCOLORS[ci]}" transform="translate(${f(x)} ${f(y)}) rotate(${f(angle)})"`
+      + ` d="M0 ${f(-size)} C ${f(k)} ${f(-size * 0.4)} ${f(k)} ${f(size * 0.4)} 0 ${f(size)}`
+      + ` C ${f(-k)} ${f(size * 0.4)} ${f(-k)} ${f(-size * 0.4)} 0 ${f(-size)} Z"/>`;
+  }
+  // place n leaves around p, within the angle arc [aMin, aMax] degrees
+  function cluster(p, n, size, spread, aMin = 0, aMax = 360) {
+    let out = '';
+    for (let i = 0; i < n; i++) {
+      const a = aMin + ((i + rnd() * 0.6) / n) * (aMax - aMin);
+      const r = spread + rnd() * size;
+      const lx = p.x + Math.cos(a * Math.PI / 180) * r;
+      const ly = p.y + Math.sin(a * Math.PI / 180) * r;
+      out += oneLeaf(lx, ly, size * (0.7 + rnd() * 0.5), a + 90, i % 3);
+    }
+    return out;
+  }
+
+  function buildTree(tree, k) {
+    const svg = tree.querySelector('.branches');
+    const catEl = tree.querySelector('.hex-cat');
+    if (!svg || !catEl) return;
+    const center = (el) => ({ x: parseFloat(el.style.left) / 100 * W, y: parseFloat(el.style.top) / 100 * H });
+    const cat = center(catEl);
+    const leafEls = Array.from(tree.querySelectorAll('.hex[data-skill]'));
+
+    // fan this tree's skills upward, at varying distances from the trunk top
+    leafEls.forEach((el, j) => {
+      const jitter = (((k * 5 + j) * 53) % 15) - 7; // deterministic ±7px
+      const a = FAN_ANG[j % 5] * Math.PI / 180;
+      const r = FAN_R[j % 5] + jitter;
+      el.style.left = ((cat.x + Math.cos(a) * r) / W * 100).toFixed(2) + '%';
+      el.style.top = ((cat.y + Math.sin(a) * r) / H * 100).toFixed(2) + '%';
     });
-    requestAnimationFrame(animateTrail);
+    const leaves = leafEls.map(center);
+
+    // bark: trunk from the ground to the category, then a twig to each skill
+    const gid = 'sk-bark-' + k;
+    let wood = `<path fill="url(#${gid})" d="${limb({ x: cat.x, y: H }, cat, 16, 8, 0)}"/>`;
+    leaves.forEach((lf) => {
+      wood += `<path fill="url(#${gid})" d="${limb(cat, lf, 6, 2.5, (rnd() - 0.5) * 8)}"/>`;
+    });
+
+    // foliage (over the bark, behind the icons). Category leaves stay in the
+    // upper arc so they never cover the label below the category node.
+    let foliage = cluster(cat, 8, 12, 40, 150, 390);
+    leaves.forEach((lf) => { foliage += cluster(lf, 4, 9, 22); });
+
+    svg.innerHTML =
+      `<defs><linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="0" y2="460">`
+      + '<stop offset="0" stop-color="#6f5a33"/><stop offset="1" stop-color="#47371f"/>'
+      + '</linearGradient></defs>' + wood + foliage;
   }
 
-  animateTrail();
-})();
-
-
-/* ── 4. INFINITE AUTO-SCROLL PROJECT BELT ── */
-(function initProjectBelt() {
-  const wrap = document.querySelector('.projects-track-wrap');
-  const belt = document.getElementById('projBelt');
-  if (!wrap || !belt) return;
-
-  // Triple-clone cards so the belt never runs out
-  const origCards = Array.from(belt.children);
-  origCards.forEach(c => belt.appendChild(c.cloneNode(true)));
-  origCards.forEach(c => belt.appendChild(c.cloneNode(true)));
-
-  const GAP        = 24;        // matches CSS gap: 1.5rem = 24px
-  const BASE_SPEED = 0.6;       // px per frame, auto-scroll rate
-  let   offset     = 0;
-  let   speed      = BASE_SPEED;
-  let   paused     = false;
-
-  // Drag state
-  let isDragging     = false;
-  let dragStartX     = 0;
-  let dragStartOffset = 0;
-  let dragVel        = 0;
-  let lastDragX      = 0;
-  let lastDragT      = 0;
-
-  /** Total pixel width of one full set of original cards */
-  function setWidth() {
-    return origCards.reduce((sum, c) => sum + c.offsetWidth + GAP, 0);
-  }
-
-  function tick() {
-    if (!isDragging) {
-      if (!paused) {
-        // Smoothly decay fling velocity back to base auto-scroll speed
-        speed += (BASE_SPEED - speed) * 0.05;
-        offset -= speed;
-      }
-    }
-
-    const sw = setWidth();
-    if (sw > 0) {
-      if (offset <= -sw) offset += sw;  // loop forward
-      if (offset > 0)    offset -= sw;  // loop backward
-    }
-
-    belt.style.transform = `translateX(${offset}px)`;
-    requestAnimationFrame(tick);
-  }
-
-  requestAnimationFrame(tick);
-
-  /* Pause on hover */
-  wrap.addEventListener('mouseenter', () => { paused = true; });
-  wrap.addEventListener('mouseleave', () => { if (!isDragging) paused = false; });
-
-  /* Drag helpers */
-  function onDragStart(x) {
-    isDragging      = true;
-    paused          = true;
-    dragStartX      = x;
-    dragStartOffset = offset;
-    lastDragX       = x;
-    lastDragT       = performance.now();
-    wrap.classList.add('grabbing');
-  }
-
-  function onDragMove(x) {
-    if (!isDragging) return;
-    const now = performance.now();
-    const dt  = now - lastDragT || 16;
-    dragVel   = (x - lastDragX) / dt * 16; // normalise to px-per-frame
-    lastDragX = x;
-    lastDragT = now;
-    offset    = dragStartOffset + (x - dragStartX);
-  }
-
-  function onDragEnd() {
-    if (!isDragging) return;
-    isDragging = false;
-    wrap.classList.remove('grabbing');
-    // Hand fling velocity to the auto-scroller (invert: dragging right = scrolling left)
-    speed = Math.max(-12, Math.min(12, -dragVel));
-    paused = false;
-  }
-
-  /* Mouse events */
-  wrap.addEventListener('mousedown', e => { e.preventDefault(); onDragStart(e.clientX); });
-  window.addEventListener('mousemove', e => onDragMove(e.clientX));
-  window.addEventListener('mouseup', onDragEnd);
-
-  /* Touch events */
-  wrap.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX), { passive: true });
-  wrap.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX),  { passive: true });
-  wrap.addEventListener('touchend',   onDragEnd);
+  document.querySelectorAll('.mini-tree').forEach(buildTree);
 })();

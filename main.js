@@ -24,10 +24,7 @@ function setupCarousel(track) {
     const d = document.createElement('button');
     d.className = 'car-dot';
     d.setAttribute('aria-label', 'Go to item ' + (i + 1));
-    d.addEventListener('click', () => {
-      bumpAuto();
-      cards[originals.length + i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    });
+    d.addEventListener('click', () => seekToCard(i));
     dotsWrap.appendChild(d);
     return d;
   });
@@ -77,8 +74,22 @@ function setupCarousel(track) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // px per frame ≈ a gentle crawl; negative drifts the other way.
   const DRIFT = track.hasAttribute('data-reverse') ? -0.5 : 0.5;
-  let apRaf = null, resumeTimer = null, driftAccum = 0;
+  let apRaf = null, driftAccum = 0, seekRemaining = 0, seekAccum = 0;
   function autoTick() {
+    if (Math.abs(seekRemaining) >= 0.5) {
+      // Ease the REMAINING distance toward a dot/arrow target, in whole pixels.
+      // Tracking a relative remaining distance (not an absolute scroll target)
+      // keeps the loop-wrap from turning the chase into a runaway scroll.
+      const move = Math.abs(seekRemaining) < 6 ? seekRemaining : seekRemaining * 0.22;
+      seekRemaining -= move;
+      seekAccum += move;
+      const px = Math.trunc(seekAccum);
+      if (px !== 0) { seekAccum -= px; track.scrollLeft += px; loop(); }
+      update();
+      apRaf = requestAnimationFrame(autoTick);
+      return;
+    }
+    seekRemaining = 0; seekAccum = 0;
     // Accumulate fractional drift and apply only whole-pixel steps, since
     // scrollLeft is rounded to integers (sub-pixel writes get rounded away).
     driftAccum += DRIFT;
@@ -100,11 +111,22 @@ function setupCarousel(track) {
     if (apRaf !== null) { cancelAnimationFrame(apRaf); apRaf = null; }
     track.classList.remove('autoplaying');
   }
-  // Pause briefly after a discrete interaction (dot/arrow), then resume.
-  function bumpAuto() {
-    pauseAuto();
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(playAuto, 4000);
+  // Glide to a target WITHOUT stopping: the drift loop eases there and then
+  // carries on, so dots/arrows keep the carousel moving and the dots in sync.
+  function seekBy(delta) {
+    if (setWidth > 0) {
+      delta = ((delta % setWidth) + setWidth) % setWidth; // shortest equivalent
+      if (delta > setWidth / 2) delta -= setWidth;        // given the looped clones
+    }
+    stopMomentum();
+    if (reduceMotion) { track.scrollLeft += delta; loop(); update(); return; }
+    seekRemaining = delta; // distance left to travel (immune to loop-wrap)
+    seekAccum = 0;
+    playAuto(); // make sure the loop is running so it can ease to the target
+  }
+  function seekToCard(idx) {
+    const card = cards[originals.length + idx];
+    seekBy(card.offsetLeft + card.offsetWidth / 2 - track.clientWidth / 2 - track.scrollLeft);
   }
 
   track.addEventListener('scroll', () => { loop(); schedule(); }, { passive: true });
@@ -129,15 +151,16 @@ function setupCarousel(track) {
     return firstReal.getBoundingClientRect().width + gap;
   };
   document.querySelectorAll('.car-prev[data-car="' + name + '"]').forEach((b) =>
-    b.addEventListener('click', () => { bumpAuto(); track.scrollBy({ left: -step(), behavior: 'smooth' }); })
+    b.addEventListener('click', () => seekBy(-step()))
   );
   document.querySelectorAll('.car-next[data-car="' + name + '"]').forEach((b) =>
-    b.addEventListener('click', () => { bumpAuto(); track.scrollBy({ left: step(), behavior: 'smooth' }); })
+    b.addEventListener('click', () => seekBy(step()))
   );
 
-  // Drag to scroll, with fling (momentum) on release. We move by incremental
-  // deltas so the loop can wrap mid-drag, and track velocity for the coast.
-  let dragging = false, lastX = 0, lastT = 0, moved = 0, vel = 0, momRaf = null, downCard = null;
+  // Drag to scroll, with fling (momentum) on release. A plain click never
+  // touches the autoplay — the drift only pauses once movement passes the
+  // drag threshold, so clicking a card doesn't make the carousel hiccup.
+  let dragging = false, activeDrag = false, lastX = 0, lastT = 0, moved = 0, vel = 0, momRaf = null, downCard = null;
 
   function stopMomentum() {
     if (momRaf !== null) { cancelAnimationFrame(momRaf); momRaf = null; }
@@ -158,12 +181,9 @@ function setupCarousel(track) {
   }
 
   track.addEventListener('pointerdown', (e) => {
-    stopMomentum();
-    pauseAuto();
-    dragging = true; moved = 0; vel = 0;
+    dragging = true; activeDrag = false; moved = 0; vel = 0;
     downCard = e.target.closest('.card');
     lastX = e.clientX; lastT = e.timeStamp;
-    track.classList.add('dragging');
     track.setPointerCapture(e.pointerId);
   });
   track.addEventListener('pointermove', (e) => {
@@ -172,6 +192,13 @@ function setupCarousel(track) {
     const dt = e.timeStamp - lastT;
     lastX = e.clientX; lastT = e.timeStamp;
     moved += Math.abs(dx);
+    if (!activeDrag) {
+      if (moved <= 4) return;     // still within click tolerance — leave autoplay alone
+      activeDrag = true;          // it's a real drag now: take over from autoplay
+      stopMomentum();
+      pauseAuto();
+      track.classList.add('dragging');
+    }
     track.scrollLeft -= dx;
     loop();
     // Smoothed scroll velocity in px/frame (~16ms), clamped for sanity.
@@ -186,11 +213,9 @@ function setupCarousel(track) {
     if (e && e.pointerId != null && track.hasPointerCapture(e.pointerId)) {
       track.releasePointerCapture(e.pointerId);
     }
-    // A tap (no real drag) opens the card's page.
-    if (moved <= 4) {
-      track.classList.remove('dragging');
-      if (downCard && downCard.dataset.href) { go(downCard); return; }
-      playAuto();
+    // A tap (no real drag): open the card's page; autoplay was never paused.
+    if (!activeDrag) {
+      if (downCard && downCard.dataset.href) go(downCard);
       return;
     }
     if (Math.abs(vel) > 0.5) {
@@ -281,12 +306,36 @@ document.querySelectorAll('.carousel').forEach(setupCarousel);
     });
     const leaves = leafEls.map(center);
 
-    // bark: trunk from the ground to the category, then a twig to each skill
+    // a floating hexagon island the tree roots into: flat hex grass top,
+    // faceted dirt sides tapering to a point underneath.
+    const cx = cat.x, topY = 388, rw = 84, rh = 23, tipY = 458;
+    const A = `${cx - rw} ${topY}`, B = `${cx - rw / 2} ${topY - rh}`,
+          C = `${cx + rw / 2} ${topY - rh}`, D = `${cx + rw} ${topY}`,
+          E = `${cx + rw / 2} ${topY + rh}`, F = `${cx - rw / 2} ${topY + rh}`,
+          P = `${cx} ${tipY}`;
+    const island =
+        `<path fill="#4a3a20" d="M${A} L${F} L${E} L${D} L${P} Z"/>`         // dirt body
+      + `<path fill="#382b15" d="M${A} L${F} L${P} Z"/>`                      // left facet (shadow)
+      + `<path fill="#5c4a2a" d="M${E} L${D} L${P} Z"/>`                      // right facet (light)
+      + `<path fill="#557a35" d="M${A} L${B} L${C} L${D} L${E} L${F} Z"/>`    // grass top
+      + `<path fill="#6b9544" opacity="0.5" d="M${A} L${B} L${C} L${D} Z"/>`; // grass back highlight
+
+    // bark: trunk rooting into the island top, then a twig to each skill
     const gid = 'sk-bark-' + k;
-    let wood = `<path fill="url(#${gid})" d="${limb({ x: cat.x, y: H }, cat, 16, 8, 0)}"/>`;
+    let wood = `<path fill="url(#${gid})" d="${limb({ x: cx, y: topY + 6 }, cat, 16, 8, 0)}"/>`;
     leaves.forEach((lf) => {
       wood += `<path fill="url(#${gid})" d="${limb(cat, lf, 6, 2.5, (rnd() - 0.5) * 8)}"/>`;
     });
+
+    // grass tufts on top of the island
+    let grass = '';
+    for (let g = 0; g < 7; g++) {
+      const gx = cx - 60 + g * 20 + (rnd() * 8 - 4);
+      const h = 8 + rnd() * 8;
+      const tip = gx + (rnd() * 10 - 5);
+      grass += `<path stroke="#4d7233" stroke-width="2" fill="none" stroke-linecap="round"`
+        + ` d="M${gx.toFixed(1)} ${topY + 4} Q${((gx + tip) / 2).toFixed(1)} ${(topY + 4 - h * 0.6).toFixed(1)} ${tip.toFixed(1)} ${(topY + 4 - h).toFixed(1)}"/>`;
+    }
 
     // foliage (over the bark, behind the icons). Category leaves stay in the
     // upper arc so they never cover the label below the category node.
@@ -296,7 +345,7 @@ document.querySelectorAll('.carousel').forEach(setupCarousel);
     svg.innerHTML =
       `<defs><linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="0" y1="120" x2="0" y2="460">`
       + '<stop offset="0" stop-color="#6f5a33"/><stop offset="1" stop-color="#47371f"/>'
-      + '</linearGradient></defs>' + wood + foliage;
+      + '</linearGradient></defs>' + island + wood + grass + foliage;
   }
 
   document.querySelectorAll('.mini-tree').forEach(buildTree);
